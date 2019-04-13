@@ -11,8 +11,11 @@ include_directories(${PC_JSON-C_INCLUDE_DIRS})
 include_directories(${CMAKE_SOURCE_DIR})
 link_directories(${CMAKE_SOURCE_DIR})
 
+include_directories(${CMAKE_SOURCE_DIR}/thirdparty/trezor-crypto)
+link_directories(${CMAKE_SOURCE_DIR}/thirdparty/trezor-crypto)
 
-
+message(!! cmakeSRCTEST)
+message(${CMAKE_CURRENT_BINARY_DIR})
 
 solc_compile_abi(${CMAKE_CURRENT_SOURCE_DIR}/TestContract.sol ${CMAKE_CURRENT_BINARY_DIR}/contracts_abi.json)
 solc_abi_to_c(${CMAKE_CURRENT_BINARY_DIR}/contracts_abi.json ${CMAKE_CURRENT_BINARY_DIR}/contracts.h h)

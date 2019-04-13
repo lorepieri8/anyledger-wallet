@@ -2,11 +2,15 @@ cmake_minimum_required(VERSION 3.0.0)
 project("trezor-crypto-lib")
 include_directories(.)
 
+message(33333)
+
 file(GLOB SOURCES "*.c")
 file(GLOB HEADERS "*.h")
 file(GLOB HEADERS_AES "aes/*.h")
 file(GLOB HEADERS_CHACHA "chacha20poly1305/*.h")
 file(GLOB HEADERS_DONNA "ed25519-donna/*.h")
+
+message(111 ${SOURCES})
 
 add_library(trezor-crypto STATIC ${SOURCES})
 set_target_properties(trezor-crypto PROPERTIES LINKER_LANGUAGE C)
@@ -20,3 +24,5 @@ install(TARGETS trezor-crypto ARCHIVE DESTINATION lib)
 install(FILES ${HEADERS} DESTINATION include/trezor-crypto)
 install(FILES ${HEADERS_CHACHA} DESTINATION include/trezor-crypto/chacha20poly1305/)
 install(FILES ${HEADERS_DONNA} DESTINATION include/trezor-crypto/ed25519-donna/)
+
+install(TARGETS trezor-crypto ARCHIVE DESTINATION lib)

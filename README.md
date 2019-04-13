@@ -2,15 +2,14 @@
 
 ## Overview
 
-🏦 AnyLedger Embedded Hardware wallet for Internet of Things
+🏦 AnyLedger Embedded Wallet for Internet of Things
 
-C crypto libraries to safely manage, generate and store private keys, to generate blockchain addresses and to sign transactions.
+C crypto libraries to safely manage, generate and store private keys, to generate blockchain addresses and to sign transactions. 
 
-Additionally, it will contain a RTOS app (for instance [Zephyr](https://github.com/AnyLedger/zephyr)) and support for Trusted Execution Environment.
+Additionally, it contains a RTOS app ([Zephyr](https://github.com/AnyLedger/zephyr)).
+The current implementation uses Ethereum and HyperLedger, but the same architecture will be used for all the other chains. The current implementation supports [100+ hardware platforms](https://docs.zephyrproject.org/latest/boards/index.html) and is mainly bug tested on Nordic nRF52840.
 
-The current implementation uses Ethereum, but the same architecture will be used for HyperLedger and other chains in the future. The current implementation is using Nordic nRF52840.
-
-Any IoT device flashing the embedded wallet can safely connect to a given blockchain. The connection itself is given by [AnyLedger Hub](https://github.com/AnyLedger/anyledger-hub) which, among the many functionalities, runs the blockchain nodes, the LWM2M server and gives access to storage solutions.
+Any IoT device flashing the embedded wallet can safely connect to a given blockchain, do transactions and interact with smart contracts. 
 
 ## Contributing
 
@@ -20,11 +19,13 @@ Have a look at our [contribution guidelines](https://github.com/AnyLedger/anyled
 
 ### Dependencies
 
-#### tests/x86 builds
+##### Linux (Ubuntu)
+```
+apt-get install libgtest-dev g++ make cmake wget build-essential clang clang-tidy ninja-build git python3-pip -y
 
-##### Linux
-
-`apt-get install libgtest-dev g++ make cmake wget build-essential clang clang-tidy-3.8 ninja-build`
+# Ubuntu's libgtest-dev is only the source. You have to compile them manually.
+cd /usr/src/gtest; cmake .; cmake --build . --target install
+```
 
 ##### macOS
 
@@ -42,7 +43,7 @@ make install
 
 Additional dependencies (installed using [Homebrew](https://brew.sh)):
 
-`brew install gcc make cmake wget ninja`
+`brew install gcc make cmake wget ninja nanopb-generator protobuf`
 
 #### Python (this is required for ABI compiler)
 `pip3 install --user -r requirements.txt`
@@ -65,7 +66,7 @@ This build is used to develop and test the wallet library on your desktop.
 
 ### zephyr build
 
-Prerequisites: a working zephyr SDK, see [here](https://docs.zephyrproject.org/latest/getting_started/getting_started.html) for instructions. 
+Prerequisites: a working zephyr SDK (at least v0.9.5), see [here](https://docs.zephyrproject.org/latest/getting_started/getting_started.html) for instructions. 
 Please make sure you can compile and flash at least blinky example before building the wallet.
 
 1) clone wallet repo to the zephyr's `samples` directory
@@ -76,3 +77,7 @@ Please make sure you can compile and flash at least blinky example before buildi
 
 3) compile & flash the firmware
 `ninja && ninja flash`
+
+## Using AnyLedger wallet
+
+To start AnyLedger wallet using a QEMU virtual machine, [see here](https://github.com/AnyLedger/anyledger-wallet/blob/master/BUILD-qemu.md).

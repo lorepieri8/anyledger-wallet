@@ -20,7 +20,10 @@
 #include "uint256.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
+#include "hextobin.h"
+#include "endian.h"
 
 
 static const char HEXDIGITS[] = "0123456789abcdef";
@@ -54,8 +57,8 @@ void readu256BE(const uint8_t *buffer, uint256_t *target) {
 
 void writeu128BE(const uint128_t *number, uint8_t *buffer)
 {
-    *(uint64_t*)buffer = ENDIAN_SWAP_U64(LOWER_P(number));
-    *(uint64_t*)(buffer + sizeof(uint64_t)) = ENDIAN_SWAP_U64(UPPER_P(number));
+    *(uint64_t*)buffer = ENDIAN_SWAP_U64(UPPER_P(number));
+    *(uint64_t*)(buffer + sizeof(uint64_t)) = ENDIAN_SWAP_U64(LOWER_P(number));
 }
 
 void writeu256BE(const uint256_t *number, uint8_t *buffer)
@@ -583,4 +586,35 @@ void set256_uint64(uint256_t *target, uint64_t val)
 {
     clear256(target);
     LOWER(LOWER_P(target)) = val;
+}
+
+void set256_uint64BE(uint256_t *target, uint64_t val)
+{
+    clear256(target);
+    LOWER(LOWER_P(target)) = htobe64(val);
+}
+
+// connect hexencoded ASCII to an uint256
+int fromstring256(const char *hexencoded, uint256_t *out)
+{
+    if(((strlen(hexencoded) > 2)) && (hexencoded[0] == '0') && (hexencoded[1] == 'x')) {
+        hexencoded += 2;
+    }
+    if((strlen(hexencoded) < 1) || (strlen(hexencoded) > (64))) {
+        return -1;
+    }
+
+    clear256(out);
+    uint8_t buf[32] = {0};
+    uint8_t *buf_p = buf + sizeof(buf) - (strlen(hexencoded) / 2);
+    if((strlen(hexencoded) % 2) != 0) {
+        // add one byte for odd-length hexstrings
+        buf_p -= 1;
+    }
+    if(hextobin_2(hexencoded, buf_p, sizeof(buf) - (buf_p - buf)) < 0) {
+        return -1;
+    }
+    // convert bin to uint256_t
+    readu256BE(buf, out);
+    return 0;
 }

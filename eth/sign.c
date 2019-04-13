@@ -27,7 +27,7 @@ int eth_digest_message(const uint8_t *data, size_t data_len, uint8_t *digest)
     keccak_Update(&hasher_ctx, (uint8_t*)_msg_prefix, strlen(_msg_prefix));
     // pass a data length (as an ASCII string) to the hasher
     char _data_len[8] = {0};
-    snprintf(_data_len, sizeof(_data_len), "%ld", data_len);
+    snprintf(_data_len, sizeof(_data_len), "%zu", data_len);
     keccak_Update(&hasher_ctx, (uint8_t*)_data_len, strlen(_data_len));
     // lastly pass in the data
     keccak_Update(&hasher_ctx, data, data_len);
@@ -69,5 +69,11 @@ int eth_sign_data(const uint8_t *privkey, const uint8_t *data, size_t data_len, 
     out->v = signature[64];
     memcpy(&out->r, signature, sizeof(uint256_t));
     memcpy(&out->s, signature+sizeof(uint256_t), sizeof(uint256_t));
+    return 0;
+}
+
+int privkey_to_pubkey(const uint8_t *privkey, uint8_t *pubkey)
+{
+    ecdsa_get_public_key65(curve, privkey, pubkey);
     return 0;
 }

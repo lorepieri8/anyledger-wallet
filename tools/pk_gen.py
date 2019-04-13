@@ -3,7 +3,7 @@ import random
 import click
 from eth_utils import decode_hex, encode_hex
 
-KEY_WARNING = '#pragma message(PRIVATE KEY GENERATED USING random.random(). NOT SUITABLE FOR PRODUCTION USE)'
+KEY_WARNING = '#pragma message("PRIVATE KEY GENERATED USING random.random(). NOT SUITABLE FOR PRODUCTION USE")'
 
 def encode_bytes(data):
     ret = ''
@@ -32,7 +32,7 @@ def main(keyfile, auto):
             else:
                 raise
     if k is None:
-        k = "%x" % (random.randrange(1, 2**256))
+        k = "%064x" % (random.randrange(1, 2**256))
         print(KEY_WARNING)
 
     x = encode_bytes(decode_hex(k))
